@@ -20,5 +20,10 @@ namespace Personal_Task_Manager
         {
             InitializeComponent();
         }
+
+        private void btnAddNewTask_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

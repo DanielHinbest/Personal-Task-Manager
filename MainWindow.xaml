@@ -113,22 +113,27 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Grid.Column="0">
-                    <TextBlock Text="Personal Task Manager" 
+                    <TextBlock x:Name="lblTitle"
+                             Text="Personal Task Manager" 
                              Foreground="White" 
                              FontSize="24" 
                              FontWeight="Bold"
                              Margin="0,0,0,5"/>
-                    <TextBlock Text="Stay organized and productive" 
+                    <TextBlock x:Name="lblSubtitle"
+                             Text="Stay organized and productive" 
                              Foreground="#BDC3C7" 
                              FontSize="14"/>
                 </StackPanel>
 
-                <Button Grid.Column="1" 
+                <Button 
+                        x:Name="btnAddNewTask"
+                        Grid.Column="1" 
                         Content="+ Add New Task" 
                         Style="{StaticResource PrimaryButtonStyle}"
                         Command="{Binding AddTaskCommand}"
                         FontSize="14"
-                        Padding="20,10"/>
+                        Padding="20,10"
+                        Click="btnAddNewTask_Click"/>
             </Grid>
         </Border>
 
@@ -148,8 +153,9 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="🔍" FontSize="16" VerticalAlignment="Center" Margin="10,0,5,0" Foreground="#7F8C8D"/>
-                        <TextBox Grid.Column="1" 
+                        <TextBlock x:Name="txtSearchIcon" Grid.Column="0" Text="🔍" FontSize="16" VerticalAlignment="Center" Margin="10,0,5,0" Foreground="#7F8C8D"/>
+                        <TextBox x:Name="txtSearchBox"
+                                Grid.Column="1" 
                                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                                 BorderThickness="0"
                                 Background="Transparent"
@@ -179,7 +185,8 @@
 
                 <!-- Filter Options -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="20,0,0,0" VerticalAlignment="Center">
-                    <ComboBox Width="120" 
+                    <ComboBox x:Name="cmbPriority"
+                            Width="120" 
                             SelectedValue="{Binding SelectedPriorityFilter}"
                             Margin="0,0,10,0"
                             Padding="8">
@@ -189,7 +196,9 @@
                         <ComboBoxItem Content="Low Priority" Tag="Low"/>
                     </ComboBox>
 
-                    <ComboBox Width="120" 
+                    <ComboBox 
+                            x:Name="cmbStatus"
+                            Width="120" 
                             SelectedValue="{Binding SelectedStatusFilter}"
                             Margin="0,0,10,0"
                             Padding="8">
@@ -200,6 +209,7 @@
                     </ComboBox>
 
                     <ComboBox Width="120" 
+                            Name="cmbCategory"
                             SelectedValue="{Binding SelectedCategoryFilter}"
                             ItemsSource="{Binding Categories}"
                             DisplayMemberPath="Name"
@@ -215,11 +225,13 @@
 
                 <!-- View Options -->
                 <StackPanel Grid.Column="2" Orientation="Horizontal">
-                    <Button Content="Refresh" 
+                    <Button x:Name="btnRefresh"
+                            Content="Refresh" 
                             Style="{StaticResource SecondaryButtonStyle}"
                             Command="{Binding RefreshCommand}"
                             Padding="12,8"/>
-                    <Button Content="Categories" 
+                    <Button x:Name="btnManageCategories"
+                            Content="Categories" 
                             Style="{StaticResource SecondaryButtonStyle}"
                             Command="{Binding ManageCategoriesCommand}"
                             Padding="12,8"/>
@@ -267,7 +279,9 @@
                                     </Ellipse>
 
                                     <!-- Task Title -->
-                                    <TextBlock Text="{Binding Title}" 
+                                    <TextBlock 
+                                             x:Name="txtTaskTitle"
+                                             Text="{Binding Title}" 
                                              FontSize="18" 
                                              FontWeight="SemiBold"
                                              VerticalAlignment="Center">
@@ -286,7 +300,9 @@
 
                                 <!-- Action Buttons -->
                                 <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
-                                    <Button Content="✓" 
+                                    <Button 
+                                            x:Name="btnCompleteTask"
+                                            Content="✓" 
                                             Style="{StaticResource PrimaryButtonStyle}"
                                             Command="{Binding DataContext.CompleteTaskCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                             CommandParameter="{Binding}"
@@ -295,7 +311,8 @@
                                             Padding="0"
                                             ToolTip="Mark as Complete"
                                             FontWeight="Bold"/>
-                                    <Button Content="✏️" 
+                                    <Button x:Name="btnEditTask"
+                                            Content="✏️" 
                                             Style="{StaticResource SecondaryButtonStyle}"
                                             Command="{Binding DataContext.EditTaskCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                             CommandParameter="{Binding}"
@@ -303,7 +320,8 @@
                                             Padding="0"
                                             ToolTip="Edit Task"
                                             Margin="5,5,0,5"/>
-                                    <Button Content="🗑️" 
+                                    <Button x:Name="btnDeleteTask"
+                                            Content="🗑️" 
                                             Style="{StaticResource DangerButtonStyle}"
                                             Command="{Binding DataContext.DeleteTaskCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                             CommandParameter="{Binding}"
@@ -314,7 +332,7 @@
                                 </StackPanel>
 
                                 <!-- Task Description -->
-                                <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                <TextBlock x:Name="txtTaskDescription" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
                                          Text="{Binding Description}" 
                                          TextWrapping="Wrap"
                                          Foreground="#7F8C8D"

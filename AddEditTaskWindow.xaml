@@ -180,11 +180,11 @@
                 <TextBlock Text="Task Title *" Style="{StaticResource FormLabelStyle}"/>
                 <TextBox Text="{Binding TaskTitle, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" 
                          Style="{StaticResource FormTextBoxStyle}"
-                         Name="TitleTextBox"/>
+                         Name="txtTaskTitle"/>
 
                 <!-- Task Description -->
                 <TextBlock Text="Description" Style="{StaticResource FormLabelStyle}"/>
-                <TextBox Text="{Binding TaskDescription, UpdateSourceTrigger=PropertyChanged}" 
+                <TextBox x:Name="txtTaskDescription" Text="{Binding TaskDescription, UpdateSourceTrigger=PropertyChanged}" 
                          Style="{StaticResource FormTextBoxStyle}"
                          TextWrapping="Wrap"
                          AcceptsReturn="True"
@@ -195,7 +195,8 @@
                 <!-- Priority Selection -->
                 <TextBlock Text="Priority *" Style="{StaticResource FormLabelStyle}"/>
                 <ComboBox SelectedValue="{Binding SelectedPriority}" 
-                          Style="{StaticResource FormComboBoxStyle}">
+                          Style="{StaticResource FormComboBoxStyle}"
+                          x:Name="cmbPriority">
                     <ComboBoxItem Content="High Priority" Tag="High">
                         <ComboBoxItem.Template>
                             <ControlTemplate TargetType="ComboBoxItem">
@@ -264,7 +265,7 @@
                 <!-- Status Selection -->
                 <TextBlock Text="Status" Style="{StaticResource FormLabelStyle}"/>
                 <ComboBox SelectedValue="{Binding SelectedStatus}" 
-                          Style="{StaticResource FormComboBoxStyle}">
+                          Style="{StaticResource FormComboBoxStyle}" x:Name="cmbStatus">
                     <ComboBoxItem Content="Pending" Tag="Pending"/>
                     <ComboBoxItem Content="In Progress" Tag="InProgress"/>
                     <ComboBoxItem Content="Completed" Tag="Completed"/>
@@ -427,7 +428,8 @@
                             Style="{StaticResource SecondaryButtonStyle}"
                             Command="{Binding ResetFormCommand}"
                             Visibility="{Binding IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}}"
-                            Padding="15,10"/>
+                            Padding="15,10"
+                            Name="btnReset"/>
                 </StackPanel>
 
                 <!-- Right side - Primary actions -->
@@ -435,11 +437,13 @@
                     <Button Content="Cancel" 
                             Style="{StaticResource SecondaryButtonStyle}"
                             Command="{Binding CancelCommand}"
-                            IsCancel="True"/>
+                            IsCancel="True"
+                            Name="btnCancel"/>
                     <Button Content="Save" 
                             Style="{StaticResource PrimaryButtonStyle}"
                             Command="{Binding SaveCommand}"
-                            IsDefault="True"/>
+                            IsDefault="True"
+                            Name="btnSave"/>
                 </StackPanel>
             </Grid>
         </Border>
