@@ -1,21 +1,20 @@
 # Personal Task Manager
 
-A desktop productivity application built with WPF and C#, featuring task management, categorization, priority tracking, and modern MVVM architecture with optional Docker deployment capabilities.
+A desktop productivity application built with WPF and C#, featuring task management, categorization, and priority tracking with SQLite database integration.
 
 ## 🚀 Live Demo
 
-*Coming Soon - Desktop application screenshots and video walkthrough*
+*Desktop application - screenshots and walkthrough coming soon*
 
 ## 📋 Project Overview
 
-This desktop application provides a clean, efficient way to manage personal tasks and productivity. Built as a learning project to demonstrate C#/.NET desktop development skills, MVVM architecture, Entity Framework Core, and modern WPF practices.
+This desktop application provides a clean, efficient way to manage personal tasks. Built as a portfolio project to demonstrate C#/.NET desktop development skills, Entity Framework Core, and modern WPF practices.
 
 **Key Achievements:**
-- Modern WPF application with MVVM pattern
+- Modern WPF application with clean architecture
 - SQLite database with Entity Framework Core
-- Clean Architecture with separation of concerns
-- Responsive desktop UI with data binding
-- Docker-compatible console version for deployment scenarios
+- Service layer for business logic separation
+- Responsive desktop UI with proper data binding
 
 ## ✨ Features
 
@@ -23,81 +22,58 @@ This desktop application provides a clean, efficient way to manage personal task
 - **Task Management**: Create, edit, and delete tasks with detailed descriptions
 - **Priority System**: High, Medium, Low priority levels with visual indicators
 - **Category Organization**: Custom categories for better task organization
-- **Due Date Tracking**: Set and track due dates with overdue indicators
+- **Due Date Tracking**: Set and track due dates
 - **Status Management**: Track task completion status
 - **Data Persistence**: Reliable SQLite database with Entity Framework Core
 
 ### User Experience
-- **Modern Interface**: Clean WPF design with intuitive navigation
-- **Real-time Updates**: Immediate UI updates with proper data binding
-- **Search & Filter**: Find tasks quickly by title, category, or priority
+- **Clean Interface**: Intuitive WPF design with easy navigation
+- **Real-time Updates**: Immediate UI updates when data changes
 - **Visual Indicators**: Color-coded priorities and status indicators
-- **Keyboard Shortcuts**: Common shortcuts for power users
 - **Data Validation**: Input validation with user-friendly error messages
-
-### Advanced Features
-- **Task Sorting**: Multiple sorting options (date, priority, category)
-- **Bulk Operations**: Select and modify multiple tasks at once
-- **Data Export**: Export tasks to CSV for external use
-- **Backup & Restore**: Database backup and restore functionality
-- **Statistics Dashboard**: Overview of task completion and productivity metrics
 
 ## 🛠️ Technology Stack
 
 | Component | Technology | Purpose |
 |-----------|------------|---------|
-| **Desktop Framework** | WPF (.NET 6) | User interface and desktop application framework |
-| **Architecture** | MVVM Pattern | Clean separation of concerns and testability |
+| **Desktop Framework** | WPF (.NET 8) | User interface and desktop application framework |
 | **Database** | SQLite + Entity Framework Core | Local data persistence and ORM |
-| **MVVM Framework** | CommunityToolkit.Mvvm | MVVM helpers and commands |
-| **UI Styling** | Material Design WPF | Modern, consistent UI components |
-| **Containerization** | Simple Desktop Deployment | Straightforward Windows executable |
-| **Testing** | xUnit + Moq | Unit testing framework and mocking |
+| **Architecture** | Service Layer Pattern | Clean separation of UI and business logic |
 
 ## 🏗️ Architecture
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   WPF Views     │◄──►│   ViewModels    │◄──►│   Services      │
-│   (UI Layer)    │    │   (MVVM)        │    │ (Business Logic)│
+│   WPF Windows   │◄──►│   Services      │◄──►│ Entity Framework│
+│   (UI Layer)    │    │ (Business Logic)│    │   SQLite DB     │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
         │                       │                       │
-        │              ┌─────────────────┐              │
-        └─────────────►│   Data Models   │◄─────────────┘
-                       │   (Core Entities)│
-                       └─────────────────┘
-                                │
-                       ┌─────────────────┐
-                       │ Entity Framework│
-                       │   SQLite DB     │
-                       └─────────────────┘
+        └──────────────────────►│   Data Models   │◄────┘
+                                │ (Task, Category)│
+                                └─────────────────┘
 ```
 
 ### Project Structure
 ```
-PersonalTaskManager/
-├── TaskManager.Core/              # Business logic and domain models
-│   ├── Models/                    # Task, Category, Priority entities
-│   ├── Services/                  # Business logic services
-│   └── Interfaces/                # Service contracts
-├── TaskManager.Data/              # Data access layer
-│   ├── Context/                   # Entity Framework DbContext
-│   ├── Repositories/              # Data access patterns
-│   └── Migrations/                # Database migrations
-├── TaskManager.WPF/               # WPF desktop application
-│   ├── Views/                     # WPF windows and user controls
-│   ├── ViewModels/                # MVVM view models
-│   ├── Converters/                # Value converters for data binding
-│   └── Resources/                 # Styles, templates, and resources
-└── TaskManager.Tests/             # Unit tests
+Personal-Task-Manager/
+├── Data/
+│   └── AppDbContext.cs           # Entity Framework context
+├── Models/
+│   ├── Task.cs                   # Task entity
+│   └── Category.cs               # Category entity
+├── Services/
+│   ├── TaskService.cs            # Task business logic
+│   └── CategoryService.cs        # Category business logic
+├── MainWindow.xaml               # Main application window
+├── AddEditTaskWindow.xaml        # Add/Edit task dialog
+└── App.xaml.cs                   # Application startup
 ```
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- .NET 6.0 SDK or later
+- .NET 8.0 SDK or later
 - Visual Studio 2022 (recommended) or VS Code
-- Git
 
 ### Installation & Setup
 
@@ -112,32 +88,16 @@ PersonalTaskManager/
    dotnet restore
    ```
 
-3. **Build the application**
+3. **Build and run**
    ```bash
    dotnet build
-   ```
-
-4. **Run the WPF application**
-   ```bash
-   cd TaskManager.WPF
    dotnet run
    ```
 
 ### Database Setup
-The application automatically creates and initializes the SQLite database on first run:
+The application automatically creates the SQLite database on first run:
 - Database file: `tasks.db` (created in application directory)
-- Automatic migrations applied on startup
-- Sample data seeded for demonstration
-
-### Simple Deployment
-
-```bash
-# Build the application
-dotnet build -c Release
-
-# Create self-contained executable for distribution
-dotnet publish -c Release -r win-x64 --self-contained -o ./publish
-```
+- Tables created automatically using Entity Framework
 
 ## 📊 Database Schema
 
@@ -147,8 +107,8 @@ SQLite database with Entity Framework Core:
 -- Categories table
 CREATE TABLE Categories (
     Id INTEGER PRIMARY KEY AUTOINCREMENT,
-    Name TEXT NOT NULL UNIQUE,
-    Color TEXT,
+    Name TEXT NOT NULL,
+    Description TEXT,
     CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -163,202 +123,87 @@ CREATE TABLE Tasks (
     CategoryId INTEGER,
     CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     UpdatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-    CompletedAt DATETIME,
     FOREIGN KEY (CategoryId) REFERENCES Categories (Id)
 );
 ```
 
 ## 🔧 Key Implementation Details
 
-### MVVM Pattern Implementation
-- **Models**: Pure data entities with validation attributes
-- **ViewModels**: Handle UI logic, commands, and data binding using CommunityToolkit.Mvvm
-- **Views**: Pure XAML with minimal code-behind
-- **Commands**: RelayCommands for user interactions
-- **Services**: Dependency injection for business logic
-
-### WPF Modern Practices
-- **Data Binding**: Two-way binding with INotifyPropertyChanged
-- **Value Converters**: Custom converters for UI data transformation
-- **Dependency Injection**: Built-in .NET DI container
-- **Resource Management**: Centralized styles and templates
-- **Responsive Design**: Dynamic layouts that adapt to window size
-
 ### Entity Framework Core Integration
 - **Code-First Approach**: Models define database schema
-- **Migrations**: Version-controlled database changes
-- **Repository Pattern**: Abstracted data access
-- **Async Operations**: Non-blocking database operations
-- **Connection Management**: Proper disposal and connection pooling
+- **SQLite Provider**: Lightweight, file-based database
+- **Service Layer**: Clean separation between UI and data access
+- **Async Operations**: Non-blocking database operations for responsive UI
 
-## 📈 Development Progress & Future Enhancements
+### WPF Implementation
+- **Data Binding**: Two-way binding for form controls
+- **Event Handling**: Click events and form validation
+- **Dialog Windows**: Modal dialogs for task creation/editing
+- **User Controls**: Reusable UI components
 
-### ✅ Phase 1: Core Foundation (PLANNED)
-**Goal**: Basic task management with modern architecture
-
-**Planned Features:**
-- ✅ Project setup with proper architecture
-- ✅ Basic MVVM implementation with CommunityToolkit
-- ✅ SQLite database with Entity Framework Core
-- ✅ Core task CRUD operations
-- ✅ Basic WPF UI with data binding
-- ✅ Category management system
-- ✅ Priority and status tracking
-
----
-
-### Phase 2: Enhanced User Experience
-**Goal**: Polished UI and advanced features
-
-**Planned Features:**
-- Modern UI styling with Material Design WPF
-- Advanced search and filtering capabilities
-- Task sorting and grouping options
-- Keyboard shortcuts and accessibility features
-- Data export functionality (CSV, PDF)
-- Statistics and productivity insights
-- Custom themes and UI customization
-
-**Technical Implementation:**
-- Implement Material Design styling
-- Add complex filtering with LINQ expressions
-- Create custom user controls for repeated UI elements
-- Implement keyboard navigation and shortcuts
-- Add PDF generation with iTextSharp
-- Create charts for productivity visualization
-- Implement theme switching with resource dictionaries
-
-**Learning Objectives:**
-- Advanced WPF styling and theming
-- Complex data binding scenarios
-- Custom control development
-- File I/O and data export formats
-- Accessibility best practices
-
----
-
-### Phase 3: Advanced Features & Performance
-**Goal**: Production-ready application with enterprise features
-
-**Planned Features:**
-- Multi-user support with user profiles
-- Task templates and recurring tasks
-- File attachments and notes
-- Reminders and notifications
-- Synchronization with cloud services
-- Performance optimizations for large datasets
-- Comprehensive unit test coverage
-
-**Technical Implementation:**
-- Add user authentication system
-- Implement background services for reminders
-- Create plugin architecture for extensibility
-- Add cloud sync with REST APIs
-- Optimize database queries and indexing
-- Implement caching strategies
-- Add comprehensive logging and error handling
-
-**Deployment & Distribution:**
-- Create MSI installer with WiX Toolset
-- Set up automated builds with GitHub Actions
-- Implement auto-update functionality
-- Create comprehensive documentation
-- Add telemetry and crash reporting
-
-**Learning Objectives:**
-- Desktop application deployment
-- Background services in WPF
-- Cloud integration patterns
-- Performance optimization techniques
-- Application lifecycle management
-
----
-
-### Phase 4: Enterprise & Integration Features
-**Goal**: Professional-grade productivity tool
-
-**Planned Features:**
-- Team collaboration features
-- Integration with popular tools (Outlook, Teams)
-- Advanced reporting and analytics
-- API for third-party integrations
-- Mobile companion app planning
-- Enterprise deployment options
-
-**Technical Implementation:**
-- Build REST API for external integrations
-- Implement real-time collaboration features
-- Create advanced reporting engine
-- Add Office 365 integration
-- Design mobile-friendly data synchronization
-- Implement enterprise security features
-
-**Learning Objectives:**
-- API design and documentation
-- Real-time communication protocols
-- Enterprise integration patterns
-- Cross-platform data synchronization
-- Security and compliance considerations
+### Simple Architecture Benefits
+- **Easy to Understand**: Clear separation without over-engineering
+- **Maintainable**: Straightforward code structure
+- **Testable**: Service layer can be unit tested
+- **Extensible**: Easy to add new features
 
 ## 🌟 Portfolio Highlights
 
 This project demonstrates:
 
 ### Desktop Development Skills
-- **Modern WPF**: Current best practices with .NET 6 and modern XAML
-- **MVVM Mastery**: Clean architecture with proper separation of concerns
-- **Data Binding**: Complex scenarios with converters and validation
-- **Entity Framework**: Code-first approach with migrations and relationships
-- **Dependency Injection**: Proper IoC container usage in desktop applications
+- **Modern WPF**: Current best practices with .NET 8
+- **Entity Framework Core**: Database integration with code-first approach
+- **Service Layer Pattern**: Clean architecture without over-complication
+- **SQLite Integration**: Lightweight database for desktop applications
 
-### Software Architecture
-- **Clean Architecture**: Well-organized project structure with clear boundaries
-- **Design Patterns**: MVVM, Repository, and Command patterns
-- **SOLID Principles**: Maintainable and testable code structure
-- **Async Programming**: Proper async/await patterns for UI responsiveness
-- **Error Handling**: Comprehensive exception handling and user feedback
+### Software Development Fundamentals
+- **Clean Code**: Well-organized project structure
+- **Separation of Concerns**: UI separated from business logic
+- **Data Persistence**: Proper database design and relationships
+- **Error Handling**: User-friendly error messages and validation
 
-### Modern Development Practices
-- **Version Control**: Git workflow with meaningful commits
-- **Testing**: Unit tests with mocking and dependency injection
-- **Documentation**: Comprehensive README and code documentation
-- **Containerization**: Docker support for alternative deployment scenarios
-- **CI/CD Ready**: Structured for automated build and deployment
+### Practical Skills
+- **Real-world Application**: Solves actual productivity needs
+- **User Experience**: Intuitive interface design
+- **Data Management**: CRUD operations with proper validation
+- **Desktop Deployment**: Self-contained executable creation
 
 ## 🧪 Testing
 
 ```bash
-# Run all tests
-dotnet test
+# Build the application
+dotnet build
 
-# Run tests with coverage
-dotnet test --collect:"XPlat Code Coverage"
-
-# Run specific test project
-dotnet test TaskManager.Tests
+# Run the application
+dotnet run
 ```
 
 ## 📦 Deployment
 
-### Desktop Distribution
 ```bash
-# Build for development
-dotnet build
-
 # Create release build
 dotnet build -c Release
 
-# Create self-contained executable for distribution
+# Create self-contained executable
 dotnet publish -c Release -r win-x64 --self-contained -o ./publish
 ```
 
+The published folder will contain a standalone executable that can run on Windows without requiring .NET to be installed.
+
+## 🚀 Future Enhancements
+
+Potential improvements for learning and portfolio expansion:
+
+- **Enhanced UI**: Material Design styling for modern look
+- **Data Export**: Export tasks to CSV format
+- **Search & Filter**: Find tasks by keywords or criteria
+- **Notifications**: Reminders for due dates
+- **Themes**: Light/dark mode support
+
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to:
-- Report bugs or request features
-- Submit pull requests for improvements
-- Provide feedback on user experience
-- Contribute to documentation and examples
+This is a learning/portfolio project, but feedback and suggestions are welcome!
 
 ## 📄 License
 
@@ -366,4 +211,4 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ---
 
-**Built with 🎯 as a learning project to demonstrate modern C# desktop development, MVVM architecture, and Entity Framework Core skills.**
+**Built as a portfolio project to demonstrate modern C# desktop development with WPF, Entity Framework Core, and clean architecture principles.**
