@@ -2,11 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using Task = Personal_Task_Manager.Models.Task;
 
 namespace Personal_Task_Manager.Models
 {
-    internal class Category
+    public class Category
     {
+        public int Id { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
+        public required DateTime CreatedAt { get; set; }
+        public required List<Task> Tasks { get; set; }
     }
 }
