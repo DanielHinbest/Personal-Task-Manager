@@ -1,12 +1,46 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Personal_Task_Manager.Data;
+using Personal_Task_Manager.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 
 namespace Personal_Task_Manager.Services
 {
-    internal class CategoryService
+    public class CategoryService
     {
+        public async Task<List<Category>> GetAllCategoriesAsync()
+        {
+            using var context = new AppDbContext();
+            return await context.Categories.ToListAsync();
+        }
+
+        public async Task<Category?> GetCategoryByIdAsync(int id)
+        {
+            using var context = new AppDbContext();
+            return await context.Categories.FindAsync(id);
+        }
+
+        public async Task<Category> AddCategoryAsync(Category category)
+        {
+            using var context = new AppDbContext();
+            context.Categories.Add(category);
+            await context.SaveChangesAsync();
+            return category;
+        }
+
+        public async System.Threading.Tasks.Task DeleteCategoryAsync(int id)
+        {
+            using var context = new AppDbContext();
+            var category = await context.Categories.FindAsync(id);
+            if (category != null)
+            {
+                context.Categories.Remove(category);
+                await context.SaveChangesAsync();
+            }
+        }
     }
 }
