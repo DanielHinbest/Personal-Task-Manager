@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Documents;
+using Task = Personal_Task_Manager.Models.Task;
 
 namespace Personal_Task_Manager.Services
 {
@@ -24,9 +25,15 @@ namespace Personal_Task_Manager.Services
             return await context.Categories.FindAsync(id);
         }
 
-        public async Task<Category> AddCategoryAsync(Category category)
+        public async Task<Category> AddCategoryAsync(string categoryName)
         {
             using var context = new AppDbContext();
+            var category = new Category
+            {
+                Name = categoryName,
+                CreatedAt = DateTime.Now,
+                Tasks = new List<Task>()
+            };
             context.Categories.Add(category);
             await context.SaveChangesAsync();
             return category;

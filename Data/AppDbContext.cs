@@ -25,7 +25,6 @@ namespace Personal_Task_Manager.Data
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(50);
-                entity.Property(e => e.Description).IsRequired().HasMaxLength(255);
                 entity.Property(e => e.CreatedAt).IsRequired();
             });
 

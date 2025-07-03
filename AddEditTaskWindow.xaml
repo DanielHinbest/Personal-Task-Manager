@@ -284,7 +284,8 @@
                                   ItemsSource="{Binding Categories}"
                                   DisplayMemberPath="Name"
                                   SelectedValuePath="Id"
-                                  Style="{StaticResource FormComboBoxStyle}">
+                                  Style="{StaticResource FormComboBoxStyle}"
+                                  x:Name="cmbCategories">
                             <ComboBox.ItemContainerStyle>
                                 <Style TargetType="ComboBoxItem">
                                     <Setter Property="Padding" Value="12,8"/>
@@ -293,14 +294,16 @@
                         </ComboBox>
                     </StackPanel>
 
-                    <Button Grid.Column="1" 
+                    <Button x:Name="btnAddCategory"
+                            Grid.Column="1" 
                             Content="+ New" 
                             Style="{StaticResource SecondaryButtonStyle}"
                             Command="{Binding AddCategoryCommand}"
                             VerticalAlignment="Bottom"
                             Margin="10,0,0,15"
                             Padding="12,8"
-                            FontSize="12"/>
+                            FontSize="12"
+                            Click="btnAddCategory_Click"/>
                 </Grid>
 
                 <!-- Due Date -->

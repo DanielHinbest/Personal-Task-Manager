@@ -23,7 +23,8 @@ namespace Personal_Task_Manager
 
         private void btnAddNewTask_Click(object sender, RoutedEventArgs e)
         {
-
+            AddEditTaskWindow taskWindow = new AddEditTaskWindow();
+            taskWindow.Show();
         }
     }
 }
