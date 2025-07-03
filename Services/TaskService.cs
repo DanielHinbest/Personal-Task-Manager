@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Personal_Task_Manager.Data;
 using Microsoft.EntityFrameworkCore;
+using Personal_Task_Manager.Models;
 
 namespace Personal_Task_Manager.Services
 {
@@ -13,7 +14,9 @@ namespace Personal_Task_Manager.Services
         public async System.Threading.Tasks.Task<List<Personal_Task_Manager.Models.Task>> GetAllTasksAsync()
         {
             using var context = new AppDbContext();
-            return await context.Tasks.ToListAsync();
+            return await context.Tasks
+                .Include(t => t.Category)
+                .ToListAsync();
         }
 
         public async System.Threading.Tasks.Task<Personal_Task_Manager.Models.Task?> GetTaskByIdAsync(int id)
@@ -22,9 +25,24 @@ namespace Personal_Task_Manager.Services
             return await context.Tasks.FindAsync(id);
         }
 
-        public async System.Threading.Tasks.Task<Personal_Task_Manager.Models.Task> AddTaskAsync(Personal_Task_Manager.Models.Task task)
+        public async System.Threading.Tasks.Task<Personal_Task_Manager.Models.Task> AddTaskAsync(string title, string description, string priority, string status, DateTime dueDate, Category category)
         {
             using var context = new AppDbContext();
+
+            context.Categories.Attach(category);
+
+            var task = new Personal_Task_Manager.Models.Task
+            {
+                Title = title,
+                Description = description,
+                Priority = priority,
+                Status = status,
+                DueDate = dueDate,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now,
+                Category = category,
+                CategoryId = category.Id
+            };
             context.Tasks.Add(task);
             await context.SaveChangesAsync();
             return task;

@@ -316,7 +316,8 @@
                     <StackPanel Grid.Column="0">
                         <TextBlock Text="Due Date" Style="{StaticResource FormLabelStyle}"/>
                         <DatePicker SelectedDate="{Binding DueDate}" 
-                                    Style="{StaticResource FormDatePickerStyle}"/>
+                                    Style="{StaticResource FormDatePickerStyle}"
+                                    x:Name="dateDueDate"/>
                     </StackPanel>
 
                     <Button Grid.Column="1" 
@@ -446,7 +447,7 @@
                             Style="{StaticResource PrimaryButtonStyle}"
                             Command="{Binding SaveCommand}"
                             IsDefault="True"
-                            Name="btnSave"/>
+                            Name="btnSave" Click="btnSave_Click"/>
                 </StackPanel>
             </Grid>
         </Border>

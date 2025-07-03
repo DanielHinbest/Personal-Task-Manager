@@ -1,7 +1,10 @@
 ﻿using Personal_Task_Manager.Models;
+using Personal_Task_Manager.Services;
 using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows;
+using Task = System.Threading.Tasks.Task;
 
 namespace Personal_Task_Manager
 {
@@ -44,6 +47,34 @@ namespace Personal_Task_Manager
             {
                 Categories.Add(category);
             }
+        }
+
+        private async void btnSave_Click(object sender, RoutedEventArgs e)
+        {
+            CategoryService categoryService = new CategoryService();
+            string title = txtTaskTitle.Text;
+            string description = txtTaskDescription.Text;
+            string priority = cmbPriority.Text;
+            string status = cmbStatus.Text;
+            DateTime? dueDate = dateDueDate.SelectedDate;
+
+            if (string.IsNullOrWhiteSpace(title) || dueDate == null)
+            {
+                MessageBox.Show("Please enter a title and select a due date.");
+                return;
+            }
+
+            var category = await categoryService.GetCategoryByNameAsync(cmbCategories.Text);
+            if (category == null)
+            {
+                MessageBox.Show("Please select a valid category.");
+                return;
+            }
+
+            TaskService taskService = new TaskService();
+            await taskService.AddTaskAsync(title, description, priority, status, dueDate.Value, category);
+            this.DialogResult = true;
+            this.Close();
         }
     }
 }

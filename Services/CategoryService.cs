@@ -25,6 +25,12 @@ namespace Personal_Task_Manager.Services
             return await context.Categories.FindAsync(id);
         }
 
+        public async Task<Category?> GetCategoryByNameAsync(string name)
+        {
+            using var context = new AppDbContext();
+            return await context.Categories.FirstOrDefaultAsync(c => c.Name == name);
+        }
+
         public async Task<Category> AddCategoryAsync(string categoryName)
         {
             using var context = new AppDbContext();
