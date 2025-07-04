@@ -14,6 +14,8 @@
         ShowInTaskbar="False">
 
     <Window.Resources>
+        <!-- BooleanToVisibilityConverter for bindings -->
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <!-- Form Styles -->
         <Style x:Key="FormLabelStyle" TargetType="TextBlock">
             <Setter Property="FontWeight" Value="SemiBold"/>
@@ -21,7 +23,6 @@
             <Setter Property="Foreground" Value="#2C3E50"/>
             <Setter Property="FontSize" Value="14"/>
         </Style>
-
         <Style x:Key="FormTextBoxStyle" TargetType="TextBox">
             <Setter Property="Padding" Value="12"/>
             <Setter Property="BorderBrush" Value="#BDC3C7"/>
@@ -39,7 +40,6 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-
         <Style x:Key="FormComboBoxStyle" TargetType="ComboBox">
             <Setter Property="Padding" Value="12"/>
             <Setter Property="BorderBrush" Value="#BDC3C7"/>
@@ -53,7 +53,6 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-
         <Style x:Key="FormDatePickerStyle" TargetType="DatePicker">
             <Setter Property="Padding" Value="12"/>
             <Setter Property="BorderBrush" Value="#BDC3C7"/>
@@ -67,7 +66,6 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-
         <!-- Button Styles -->
         <Style x:Key="PrimaryButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#3498DB"/>
@@ -100,7 +98,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
         <Style x:Key="SecondaryButtonStyle" TargetType="Button" BasedOn="{StaticResource PrimaryButtonStyle}">
             <Setter Property="Background" Value="#95A5A6"/>
             <Style.Triggers>
@@ -112,7 +109,6 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-
         <!-- Priority Color Brushes -->
         <SolidColorBrush x:Key="HighPriorityBrush" Color="#E74C3C"/>
         <SolidColorBrush x:Key="MediumPriorityBrush" Color="#F39C12"/>
@@ -133,7 +129,6 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-
                 <StackPanel Grid.Column="0">
                     <TextBlock Text="{Binding WindowTitle}" 
                              Foreground="White" 
@@ -144,7 +139,6 @@
                              Foreground="#BDC3C7" 
                              FontSize="12"/>
                 </StackPanel>
-
                 <!-- Priority Preview -->
                 <Border Grid.Column="1" 
                         CornerRadius="20" 
@@ -277,7 +271,6 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-
                     <StackPanel Grid.Column="0">
                         <TextBlock Text="Category" Style="{StaticResource FormLabelStyle}"/>
                         <ComboBox SelectedValue="{Binding SelectedCategoryId}" 
@@ -293,7 +286,6 @@
                             </ComboBox.ItemContainerStyle>
                         </ComboBox>
                     </StackPanel>
-
                     <Button x:Name="btnAddCategory"
                             Grid.Column="1" 
                             Content="+ New" 
@@ -312,14 +304,12 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-
                     <StackPanel Grid.Column="0">
                         <TextBlock Text="Due Date" Style="{StaticResource FormLabelStyle}"/>
                         <DatePicker SelectedDate="{Binding DueDate}" 
                                     Style="{StaticResource FormDatePickerStyle}"
                                     x:Name="dateDueDate"/>
                     </StackPanel>
-
                     <Button Grid.Column="1" 
                             Content="Clear" 
                             Style="{StaticResource SecondaryButtonStyle}"
@@ -329,92 +319,6 @@
                             Padding="12,8"
                             FontSize="12"/>
                 </Grid>
-
-                <!-- Due Time (Optional) -->
-                <TextBlock Text="Due Time (Optional)" Style="{StaticResource FormLabelStyle}"/>
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
-                    <ComboBox Width="80" 
-                              SelectedValue="{Binding DueHour}"
-                              Style="{StaticResource FormComboBoxStyle}"
-                              Margin="0,0,10,15">
-                        <ComboBox.Items>
-                            <ComboBoxItem Content="00" Tag="0"/>
-                            <ComboBoxItem Content="01" Tag="1"/>
-                            <ComboBoxItem Content="02" Tag="2"/>
-                            <ComboBoxItem Content="03" Tag="3"/>
-                            <ComboBoxItem Content="04" Tag="4"/>
-                            <ComboBoxItem Content="05" Tag="5"/>
-                            <ComboBoxItem Content="06" Tag="6"/>
-                            <ComboBoxItem Content="07" Tag="7"/>
-                            <ComboBoxItem Content="08" Tag="8"/>
-                            <ComboBoxItem Content="09" Tag="9"/>
-                            <ComboBoxItem Content="10" Tag="10"/>
-                            <ComboBoxItem Content="11" Tag="11"/>
-                            <ComboBoxItem Content="12" Tag="12"/>
-                            <ComboBoxItem Content="13" Tag="13"/>
-                            <ComboBoxItem Content="14" Tag="14"/>
-                            <ComboBoxItem Content="15" Tag="15"/>
-                            <ComboBoxItem Content="16" Tag="16"/>
-                            <ComboBoxItem Content="17" Tag="17"/>
-                            <ComboBoxItem Content="18" Tag="18"/>
-                            <ComboBoxItem Content="19" Tag="19"/>
-                            <ComboBoxItem Content="20" Tag="20"/>
-                            <ComboBoxItem Content="21" Tag="21"/>
-                            <ComboBoxItem Content="22" Tag="22"/>
-                            <ComboBoxItem Content="23" Tag="23"/>
-                        </ComboBox.Items>
-                    </ComboBox>
-
-                    <TextBlock Text=":" VerticalAlignment="Center" Margin="0,0,10,15" FontSize="16" FontWeight="Bold"/>
-
-                    <ComboBox Width="80" 
-                              SelectedValue="{Binding DueMinute}"
-                              Style="{StaticResource FormComboBoxStyle}"
-                              Margin="0,0,0,15">
-                        <ComboBox.Items>
-                            <ComboBoxItem Content="00" Tag="0"/>
-                            <ComboBoxItem Content="15" Tag="15"/>
-                            <ComboBoxItem Content="30" Tag="30"/>
-                            <ComboBoxItem Content="45" Tag="45"/>
-                        </ComboBox.Items>
-                    </ComboBox>
-                </StackPanel>
-
-                <!-- Task Notes/Additional Info -->
-                <TextBlock Text="Additional Notes" Style="{StaticResource FormLabelStyle}"/>
-                <TextBox Text="{Binding TaskNotes, UpdateSourceTrigger=PropertyChanged}" 
-                         Style="{StaticResource FormTextBoxStyle}"
-                         TextWrapping="Wrap"
-                         AcceptsReturn="True"
-                         Height="80"
-                         VerticalScrollBarVisibility="Auto"
-                         VerticalContentAlignment="Top"/>
-
-                <!-- Validation Summary -->
-                <Border Background="#FCF3CF" 
-                        BorderBrush="#F4D03F" 
-                        BorderThickness="1" 
-                        CornerRadius="5" 
-                        Padding="15"
-                        Margin="0,10,0,20"
-                        Visibility="{Binding HasValidationErrors, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <StackPanel>
-                        <TextBlock Text="⚠️ Please fix the following issues:" 
-                                 FontWeight="SemiBold" 
-                                 Foreground="#D68910"
-                                 Margin="0,0,0,5"/>
-                        <ItemsControl ItemsSource="{Binding ValidationErrors}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding}" 
-                                             Foreground="#D68910" 
-                                             Margin="0,2"
-                                             FontSize="12"/>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
-                </Border>
             </StackPanel>
         </ScrollViewer>
 
@@ -425,7 +329,6 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-
                 <!-- Left side - Additional actions -->
                 <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left">
                     <Button Content="Reset Form" 
@@ -433,9 +336,8 @@
                             Command="{Binding ResetFormCommand}"
                             Visibility="{Binding IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}}"
                             Padding="15,10"
-                            Name="btnReset"/>
+                            Name="btnReset" Click="btnReset_Click"/>
                 </StackPanel>
-
                 <!-- Right side - Primary actions -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button Content="Cancel" 

@@ -76,5 +76,15 @@ namespace Personal_Task_Manager
             this.DialogResult = true;
             this.Close();
         }
+
+        private void btnReset_Click(object sender, RoutedEventArgs e)
+        {
+            txtTaskTitle.Clear();
+            txtTaskDescription.Clear();
+            cmbPriority.SelectedIndex = -1;
+            cmbStatus.SelectedIndex = -1;
+            cmbCategories.SelectedIndex = -1;
+            dateDueDate.SelectedDate = null;
+        }
     }
 }
