@@ -1,6 +1,8 @@
 ﻿using Personal_Task_Manager.Models;
+using Personal_Task_Manager.Services;
 using System.Collections.ObjectModel;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -67,6 +69,20 @@ namespace Personal_Task_Manager
             foreach (var category in categories)
             {
                 Categories.Add(category);
+            }
+        }
+
+        private async void btnCompleteTask_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.DataContext is Task task)
+            {
+                task.Status = "Completed";
+                task.UpdatedAt = DateTime.Now;
+
+                TaskService taskService = new TaskService();
+                await taskService.UpdateTaskAsync(task);
+
+                await LoadTasksAsync();
             }
         }
     }

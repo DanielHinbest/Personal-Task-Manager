@@ -310,7 +310,9 @@
                                             Width="35" Height="35"
                                             Padding="0"
                                             ToolTip="Mark as Complete"
-                                            FontWeight="Bold"/>
+                                            FontWeight="Bold"
+                                            Click="btnCompleteTask_Click"
+                                        />
                                     <Button x:Name="btnEditTask"
                                             Content="✏️" 
                                             Style="{StaticResource SecondaryButtonStyle}"
