@@ -85,5 +85,16 @@ namespace Personal_Task_Manager
                 await LoadTasksAsync();
             }
         }
+
+        private async void btnDeleteTask_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.DataContext is Task task)
+            {
+                TaskService taskService = new TaskService();
+                await taskService.DeleteTaskAsync(task.Id);
+
+                await LoadTasksAsync();
+            }
+        }
     }
 }

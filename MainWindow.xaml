@@ -311,8 +311,7 @@
                                             Padding="0"
                                             ToolTip="Mark as Complete"
                                             FontWeight="Bold"
-                                            Click="btnCompleteTask_Click"
-                                        />
+                                            Click="btnCompleteTask_Click"/>
                                     <Button x:Name="btnEditTask"
                                             Content="✏️" 
                                             Style="{StaticResource SecondaryButtonStyle}"
@@ -330,7 +329,8 @@
                                             Width="35" Height="35"
                                             Padding="0"
                                             ToolTip="Delete Task"
-                                            Margin="5,5,0,5"/>
+                                            Margin="5,5,0,5"
+                                            Click="btnDeleteTask_Click"/>
                                 </StackPanel>
 
                                 <!-- Task Description -->
