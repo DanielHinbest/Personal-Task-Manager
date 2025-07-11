@@ -320,7 +320,8 @@
                                             Width="35" Height="35"
                                             Padding="0"
                                             ToolTip="Edit Task"
-                                            Margin="5,5,0,5"/>
+                                            Margin="5,5,0,5"
+                                            Click="btnEditTask_Click"/>
                                     <Button x:Name="btnDeleteTask"
                                             Content="🗑️" 
                                             Style="{StaticResource DangerButtonStyle}"

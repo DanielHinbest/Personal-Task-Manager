@@ -96,5 +96,29 @@ namespace Personal_Task_Manager
                 await LoadTasksAsync();
             }
         }
+
+        private async void btnEditTask_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.DataContext is Task task)
+            {
+                // Fetch the latest task from the database
+                TaskService service = new TaskService();
+                var dbTask = await service.GetTaskByIdAsync(task.Id);
+
+                if (dbTask != null)
+                {
+                    AddEditTaskWindow editWindow = new AddEditTaskWindow(dbTask);
+                    bool? result = editWindow.ShowDialog();
+                    if (result == true)
+                    {
+                        await LoadTasksAsync();
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Task not found in the database.");
+                }
+            }
+        }
     }
 }

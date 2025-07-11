@@ -14,6 +14,7 @@ namespace Personal_Task_Manager
     public partial class AddEditTaskWindow : Window
     {
         public ObservableCollection<Category> Categories { get; set; } = new();
+        private int? _pendingCategoryId;
 
         public AddEditTaskWindow()
         {
@@ -22,9 +23,34 @@ namespace Personal_Task_Manager
             Loaded += AddEditTaskWindow_Loaded;
         }
 
+        public AddEditTaskWindow(Personal_Task_Manager.Models.Task taskToEdit)
+    : this()
+        {
+            txtTaskTitle.Text = taskToEdit.Title;
+            txtTaskDescription.Text = taskToEdit.Description;
+            cmbPriority.Text = taskToEdit.Priority;
+            cmbStatus.Text = taskToEdit.Status;
+            dateDueDate.SelectedDate = taskToEdit.DueDate;
+            cmbCategories.SelectedValue = taskToEdit.CategoryId;
+
+            IsEditMode = true;
+            EditingTaskId = taskToEdit.Id;
+            _originalCreatedAt = taskToEdit.CreatedAt;
+            _pendingCategoryId = taskToEdit.CategoryId;
+        }
+
+        public bool IsEditMode { get; set; } = false;
+        public int EditingTaskId { get; set; } = 0;
+        private DateTime _originalCreatedAt;
+
         private async void AddEditTaskWindow_Loaded(object sender, RoutedEventArgs e)
         {
             await LoadCategoriesAsync();
+            if (_pendingCategoryId.HasValue)
+            {
+                cmbCategories.SelectedValue = _pendingCategoryId;
+                _pendingCategoryId = null;
+            }
         }
 
         private async void btnAddCategory_Click(object sender, RoutedEventArgs e)
@@ -72,7 +98,31 @@ namespace Personal_Task_Manager
             }
 
             TaskService taskService = new TaskService();
-            await taskService.AddTaskAsync(title, description, priority, status, dueDate.Value, category);
+
+            if (IsEditMode)
+            {
+                // Update existing task
+                var updatedTask = new Personal_Task_Manager.Models.Task
+                {
+                    Id = EditingTaskId,
+                    Title = title,
+                    Description = description,
+                    Priority = priority,
+                    Status = status,
+                    DueDate = dueDate.Value,
+                    CategoryId = category.Id,
+                    Category = category,
+                    UpdatedAt = DateTime.Now,
+                    CreatedAt = _originalCreatedAt
+                };
+                await taskService.UpdateTaskAsync(updatedTask);
+            }
+            else
+            {
+                // Add new task
+                await taskService.AddTaskAsync(title, description, priority, status, dueDate.Value, category);
+            }
+
             this.DialogResult = true;
             this.Close();
         }

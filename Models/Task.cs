@@ -17,5 +17,6 @@ namespace Personal_Task_Manager.Models
         public required DateTime UpdatedAt { get; set; }
         public int CategoryId { get; set; }
         public Category Category { get; set; } = null!;
+        public string DueDateDisplay => DueDate.ToString("MMM dd, yyyy");
     }
 }
