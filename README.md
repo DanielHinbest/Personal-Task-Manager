@@ -4,7 +4,9 @@ A desktop productivity application built with WPF and C#, featuring task managem
 
 ## 🚀 Live Demo
 
-*Desktop application - screenshots and walkthrough coming soon*
+**[Download Windows Executable](https://github.com/DanielHinbest/Personal-Task-Manager/releases/latest)**
+
+Ready-to-run desktop application - no installation required! Extract the zip file and run the executable.
 
 ## 📋 Project Overview
 
@@ -69,13 +71,23 @@ Personal-Task-Manager/
 └── App.xaml.cs                   # Application startup
 ```
 
-## 🚀 Quick Start
+## 📥 Download & Run
 
-### Prerequisites
+### Quick Start - Download Executable
+1. **[Download Latest Release](https://github.com/your-username/personal-task-manager/releases/latest)**
+2. **Extract the zip file** to any folder on your Windows machine
+3. **Run the executable** - no .NET installation required!
+4. **Start managing tasks** - the app creates its SQLite database automatically
+
+⚠️ **Security Note**: Windows may show a security warning for unsigned executables. Click "More info" → "Run anyway" to proceed.
+
+### Build from Source
+
+#### Prerequisites
 - .NET 8.0 SDK or later
 - Visual Studio 2022 (recommended) or VS Code
 
-### Installation & Setup
+#### Installation & Setup
 
 1. **Clone the repository**
    ```bash
@@ -94,7 +106,7 @@ Personal-Task-Manager/
    dotnet run
    ```
 
-### Database Setup
+#### Database Setup
 The application automatically creates the SQLite database on first run:
 - Database file: `tasks.db` (created in application directory)
 - Tables created automatically using Entity Framework
