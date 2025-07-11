@@ -8,6 +8,8 @@ A desktop productivity application built with WPF and C#, featuring task managem
 
 Ready-to-run desktop application - no installation required! Extract the zip file and run the executable.
 
+⚠️ **Note**: Some UI updates may require restarting the application to reflect changes.
+
 ## 📋 Project Overview
 
 This desktop application provides a clean, efficient way to manage personal tasks. Built as a portfolio project to demonstrate C#/.NET desktop development skills, Entity Framework Core, and modern WPF practices.
