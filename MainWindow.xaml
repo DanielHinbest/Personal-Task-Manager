@@ -229,7 +229,8 @@
                             Content="Refresh" 
                             Style="{StaticResource SecondaryButtonStyle}"
                             Command="{Binding RefreshCommand}"
-                            Padding="12,8"/>
+                            Padding="12,8"
+                            Click="btnRefresh_Click"/>
                     <Button x:Name="btnManageCategories"
                             Content="Categories" 
                             Style="{StaticResource SecondaryButtonStyle}"

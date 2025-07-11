@@ -120,5 +120,19 @@ namespace Personal_Task_Manager
                 }
             }
         }
+
+        private async void btnRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                btnRefresh.IsEnabled = false;
+                await LoadTasksAsync();
+                await LoadCategoriesAsync();
+            }
+            finally
+            {
+                btnRefresh.IsEnabled = true;
+            }
+        }
     }
 }
