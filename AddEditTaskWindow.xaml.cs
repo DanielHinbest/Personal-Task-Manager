@@ -2,8 +2,10 @@
 using Personal_Task_Manager.Services;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using Task = System.Threading.Tasks.Task;
 
 namespace Personal_Task_Manager
@@ -11,10 +13,80 @@ namespace Personal_Task_Manager
     /// <summary>
     /// Interaction logic for AddEditTaskWindow.xaml
     /// </summary>
-    public partial class AddEditTaskWindow : Window
+    public partial class AddEditTaskWindow : Window, INotifyPropertyChanged
     {
         public ObservableCollection<Category> Categories { get; set; } = new();
         private int? _pendingCategoryId;
+
+        private string _taskTitle = string.Empty;
+        private string _taskDescription = string.Empty;
+        private string _selectedPriority = "Medium";
+        private string _selectedStatus = "Pending";
+        private DateTime? _dueDate;
+        private int? _selectedCategoryId;
+
+        public string TaskTitle
+        {
+            get => _taskTitle;
+            set
+            {
+                _taskTitle = value;
+                OnPropertyChanged(nameof(TaskTitle));
+            }
+        }
+
+        public string TaskDescription
+        {
+            get => _taskDescription;
+            set
+            {
+                _taskDescription = value;
+                OnPropertyChanged(nameof(TaskDescription));
+            }
+        }
+
+        public string SelectedPriority
+        {
+            get => _selectedPriority;
+            set
+            {
+                _selectedPriority = value;
+                OnPropertyChanged(nameof(SelectedPriority));
+            }
+        }
+
+        public string SelectedStatus
+        {
+            get => _selectedStatus;
+            set
+            {
+                _selectedStatus = value;
+                OnPropertyChanged(nameof(SelectedStatus));
+            }
+        }
+
+        public DateTime? DueDate
+        {
+            get => _dueDate;
+            set
+            {
+                _dueDate = value;
+                OnPropertyChanged(nameof(DueDate));
+            }
+        }
+
+        public int? SelectedCategoryId
+        {
+            get => _selectedCategoryId;
+            set
+            {
+                _selectedCategoryId = value;
+                OnPropertyChanged(nameof(SelectedCategoryId));
+            }
+        }
+
+        public string WindowTitle => IsEditMode ? "Edit Task" : "Add New Task";
+        public string WindowSubtitle => IsEditMode ? "Update task details" : "Create a new task";
 
         public AddEditTaskWindow()
         {
@@ -24,19 +96,23 @@ namespace Personal_Task_Manager
         }
 
         public AddEditTaskWindow(Personal_Task_Manager.Models.Task taskToEdit)
-    : this()
+            : this()
         {
-            txtTaskTitle.Text = taskToEdit.Title;
-            txtTaskDescription.Text = taskToEdit.Description;
-            cmbPriority.Text = taskToEdit.Priority;
-            cmbStatus.Text = taskToEdit.Status;
-            dateDueDate.SelectedDate = taskToEdit.DueDate;
-            cmbCategories.SelectedValue = taskToEdit.CategoryId;
+            TaskTitle = taskToEdit.Title;
+            TaskDescription = taskToEdit.Description;
+            SelectedPriority = taskToEdit.Priority;
+            SelectedStatus = taskToEdit.Status;
+            DueDate = taskToEdit.DueDate;
+            SelectedCategoryId = taskToEdit.CategoryId;
 
             IsEditMode = true;
             EditingTaskId = taskToEdit.Id;
             _originalCreatedAt = taskToEdit.CreatedAt;
             _pendingCategoryId = taskToEdit.CategoryId;
+            
+            // Notify that window title properties have changed
+            OnPropertyChanged(nameof(WindowTitle));
+            OnPropertyChanged(nameof(WindowSubtitle));
         }
 
         public bool IsEditMode { get; set; } = false;
@@ -46,10 +122,73 @@ namespace Personal_Task_Manager
         private async void AddEditTaskWindow_Loaded(object sender, RoutedEventArgs e)
         {
             await LoadCategoriesAsync();
+            
             if (_pendingCategoryId.HasValue)
             {
-                cmbCategories.SelectedValue = _pendingCategoryId;
+                SelectedCategoryId = _pendingCategoryId;
                 _pendingCategoryId = null;
+            }
+
+            // Set ComboBox values after everything is loaded
+            SetComboBoxValues();
+        }
+
+        private void SetComboBoxValues()
+        {
+            // Set priority ComboBox
+            bool priorityFound = false;
+            foreach (ComboBoxItem item in cmbPriority.Items)
+            {
+                if (item.Tag?.ToString() == SelectedPriority)
+                {
+                    cmbPriority.SelectedItem = item;
+                    priorityFound = true;
+                    break;
+                }
+            }
+            
+            // If priority not found, default to Medium
+            if (!priorityFound)
+            {
+                foreach (ComboBoxItem item in cmbPriority.Items)
+                {
+                    if (item.Tag?.ToString() == "Medium")
+                    {
+                        cmbPriority.SelectedItem = item;
+                        break;
+                    }
+                }
+            }
+
+            // Set status ComboBox - handle "In Progress" vs "InProgress" discrepancy
+            bool statusFound = false;
+            string statusToMatch = SelectedStatus;
+            
+            // Convert "In Progress" to "InProgress" for matching
+            if (statusToMatch == "In Progress")
+                statusToMatch = "InProgress";
+
+            foreach (ComboBoxItem item in cmbStatus.Items)
+            {
+                if (item.Tag?.ToString() == statusToMatch)
+                {
+                    cmbStatus.SelectedItem = item;
+                    statusFound = true;
+                    break;
+                }
+            }
+            
+            // If status not found, default to Pending
+            if (!statusFound)
+            {
+                foreach (ComboBoxItem item in cmbStatus.Items)
+                {
+                    if (item.Tag?.ToString() == "Pending")
+                    {
+                        cmbStatus.SelectedItem = item;
+                        break;
+                    }
+                }
             }
         }
 
@@ -73,16 +212,24 @@ namespace Personal_Task_Manager
             {
                 Categories.Add(category);
             }
+            OnPropertyChanged(nameof(Categories));
         }
 
         private async void btnSave_Click(object sender, RoutedEventArgs e)
         {
             CategoryService categoryService = new CategoryService();
-            string title = txtTaskTitle.Text;
-            string description = txtTaskDescription.Text;
-            string priority = cmbPriority.Text;
-            string status = cmbStatus.Text;
-            DateTime? dueDate = dateDueDate.SelectedDate;
+            
+            // Get values from ComboBoxes
+            string title = TaskTitle;
+            string description = TaskDescription;
+            string priority = (cmbPriority.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "Medium";
+            string status = (cmbStatus.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "Pending";
+            
+            // Convert "InProgress" back to "In Progress" for storage
+            if (status == "InProgress")
+                status = "In Progress";
+                
+            DateTime? dueDate = DueDate;
 
             if (string.IsNullOrWhiteSpace(title) || dueDate == null)
             {
@@ -90,7 +237,7 @@ namespace Personal_Task_Manager
                 return;
             }
 
-            var category = await categoryService.GetCategoryByNameAsync(cmbCategories.Text);
+            var category = await categoryService.GetCategoryByIdAsync(SelectedCategoryId ?? 0);
             if (category == null)
             {
                 MessageBox.Show("Please select a valid category.");
@@ -129,12 +276,22 @@ namespace Personal_Task_Manager
 
         private void btnReset_Click(object sender, RoutedEventArgs e)
         {
-            txtTaskTitle.Clear();
-            txtTaskDescription.Clear();
-            cmbPriority.SelectedIndex = -1;
-            cmbStatus.SelectedIndex = -1;
-            cmbCategories.SelectedIndex = -1;
-            dateDueDate.SelectedDate = null;
+            TaskTitle = string.Empty;
+            TaskDescription = string.Empty;
+            SelectedPriority = "Medium";
+            SelectedStatus = "Pending";
+            SelectedCategoryId = null;
+            DueDate = null;
+            
+            // Reset ComboBoxes
+            SetComboBoxValues();
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

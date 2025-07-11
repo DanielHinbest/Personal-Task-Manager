@@ -147,19 +147,19 @@
                     <Border.Style>
                         <Style TargetType="Border">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding SelectedPriority}" Value="High">
+                                <DataTrigger Binding="{Binding DisplayPriority}" Value="High">
                                     <Setter Property="Background" Value="{StaticResource HighPriorityBrush}"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding SelectedPriority}" Value="Medium">
+                                <DataTrigger Binding="{Binding DisplayPriority}" Value="Medium">
                                     <Setter Property="Background" Value="{StaticResource MediumPriorityBrush}"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding SelectedPriority}" Value="Low">
+                                <DataTrigger Binding="{Binding DisplayPriority}" Value="Low">
                                     <Setter Property="Background" Value="{StaticResource LowPriorityBrush}"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Border.Style>
-                    <TextBlock Text="{Binding SelectedPriority}" 
+                    <TextBlock Text="{Binding DisplayPriority}" 
                              Foreground="White" 
                              FontSize="12" 
                              FontWeight="SemiBold"/>
@@ -188,7 +188,8 @@
 
                 <!-- Priority Selection -->
                 <TextBlock Text="Priority *" Style="{StaticResource FormLabelStyle}"/>
-                <ComboBox SelectedValue="{Binding SelectedPriority}" 
+                <ComboBox SelectedValuePath="Tag"
+                          SelectedValue="{Binding SelectedPriority}" 
                           Style="{StaticResource FormComboBoxStyle}"
                           x:Name="cmbPriority">
                     <ComboBoxItem Content="High Priority" Tag="High">
@@ -258,8 +259,10 @@
 
                 <!-- Status Selection -->
                 <TextBlock Text="Status" Style="{StaticResource FormLabelStyle}"/>
-                <ComboBox SelectedValue="{Binding SelectedStatus}" 
-                          Style="{StaticResource FormComboBoxStyle}" x:Name="cmbStatus">
+                <ComboBox SelectedValuePath="Tag"
+                          SelectedValue="{Binding SelectedStatus}" 
+                          Style="{StaticResource FormComboBoxStyle}" 
+                          x:Name="cmbStatus">
                     <ComboBoxItem Content="Pending" Tag="Pending"/>
                     <ComboBoxItem Content="In Progress" Tag="InProgress"/>
                     <ComboBoxItem Content="Completed" Tag="Completed"/>
