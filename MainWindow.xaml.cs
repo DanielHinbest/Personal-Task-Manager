@@ -1,17 +1,12 @@
 ﻿using Personal_Task_Manager.Models;
 using Personal_Task_Manager.Services;
+using System;
 using System.Collections.ObjectModel;
-using System.Text;
+using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Task = Personal_Task_Manager.Models.Task;
 
 namespace Personal_Task_Manager
@@ -19,17 +14,107 @@ namespace Personal_Task_Manager
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        public ObservableCollection<Task> Tasks { get; set; } = new();
-        public ObservableCollection<Task> FilteredTasks => Tasks;
+        private ObservableCollection<Task> _allTasks = new();
+        private ObservableCollection<Task> _filteredTasks = new();
+        private string _searchText = string.Empty;
+        private string _selectedPriorityFilter = "All";
+        private string _selectedStatusFilter = "All";
+        private int? _selectedCategoryFilter;
+
+        public ObservableCollection<Task> Tasks
+        {
+            get => _allTasks;
+            set
+            {
+                _allTasks = value;
+                OnPropertyChanged(nameof(Tasks));
+                ApplyFilters();
+            }
+        }
+
+        public ObservableCollection<Task> FilteredTasks
+        {
+            get => _filteredTasks;
+            private set
+            {
+                _filteredTasks = value;
+                OnPropertyChanged(nameof(FilteredTasks));
+                OnPropertyChanged(nameof(TasksSummary));
+            }
+        }
+
         public ObservableCollection<Category> Categories { get; set; } = new();
+
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                _searchText = value;
+                OnPropertyChanged(nameof(SearchText));
+                ApplyFilters();
+            }
+        }
+
+        public string SelectedPriorityFilter
+        {
+            get => _selectedPriorityFilter;
+            set
+            {
+                _selectedPriorityFilter = value;
+                OnPropertyChanged(nameof(SelectedPriorityFilter));
+                ApplyFilters();
+            }
+        }
+
+        public string SelectedStatusFilter
+        {
+            get => _selectedStatusFilter;
+            set
+            {
+                _selectedStatusFilter = value;
+                OnPropertyChanged(nameof(SelectedStatusFilter));
+                ApplyFilters();
+            }
+        }
+
+        public int? SelectedCategoryFilter
+        {
+            get => _selectedCategoryFilter;
+            set
+            {
+                _selectedCategoryFilter = value;
+                OnPropertyChanged(nameof(SelectedCategoryFilter));
+                ApplyFilters();
+            }
+        }
+
+        public string TasksSummary
+        {
+            get
+            {
+                var total = FilteredTasks.Count;
+                var completed = FilteredTasks.Count(t => t.Status == "Completed");
+                var pending = FilteredTasks.Count(t => t.Status == "Pending");
+                var inProgress = FilteredTasks.Count(t => t.Status == "In Progress");
+
+                return $"Total: {total} | Completed: {completed} | In Progress: {inProgress} | Pending: {pending}";
+            }
+        }
+
+        public string LastUpdated => DateTime.Now.ToString("MMM dd, yyyy HH:mm");
 
         public MainWindow()
         {
             InitializeComponent();
             this.DataContext = this;
             Loaded += MainWindow_Loaded;
+
+            // Set up filter ComboBox default selections
+            cmbPriority.SelectedIndex = 0; // "All Priorities"
+            cmbStatus.SelectedIndex = 0; // "All Status"
         }
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -50,26 +135,81 @@ namespace Personal_Task_Manager
 
         private async System.Threading.Tasks.Task LoadTasksAsync()
         {
-            var service = new Services.TaskService();
-            var tasks = await service.GetAllTasksAsync();
-
-            Tasks.Clear();
-            foreach (var task in tasks)
+            try
             {
-                Tasks.Add(task);
+                var service = new Services.TaskService();
+                var tasks = await service.GetAllTasksAsync();
+
+                Tasks.Clear();
+                foreach (var task in tasks)
+                {
+                    Tasks.Add(task);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading tasks: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private async System.Threading.Tasks.Task LoadCategoriesAsync()
         {
-            var service = new Services.CategoryService();
-            var categories = await service.GetAllCategoriesAsync();
-
-            Categories.Clear();
-            foreach (var category in categories)
+            try
             {
-                Categories.Add(category);
+                var service = new Services.CategoryService();
+                var categories = await service.GetAllCategoriesAsync();
+
+                Categories.Clear();
+                Categories.Add(new Category { Id = 0, Name = "All Categories", CreatedAt = DateTime.Now, Tasks = new List<Task>() });
+                foreach (var category in categories)
+                {
+                    Categories.Add(category);
+                }
+                OnPropertyChanged(nameof(Categories));
+
+                // Set default selection
+                SelectedCategoryFilter = 0;
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading categories: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ApplyFilters()
+        {
+            var filtered = Tasks.AsEnumerable();
+
+            // Apply search filter
+            if (!string.IsNullOrWhiteSpace(SearchText))
+            {
+                var searchLower = SearchText.ToLower();
+                filtered = filtered.Where(t => 
+                    t.Title.ToLower().Contains(searchLower) || 
+                    t.Description.ToLower().Contains(searchLower) ||
+                    (t.Category?.Name?.ToLower().Contains(searchLower) ?? false));
+            }
+
+            // Apply priority filter
+            if (SelectedPriorityFilter != "All")
+            {
+                filtered = filtered.Where(t => t.Priority == SelectedPriorityFilter);
+            }
+
+            // Apply status filter
+            if (SelectedStatusFilter != "All")
+            {
+                var statusToMatch = SelectedStatusFilter == "InProgress" ? "In Progress" : SelectedStatusFilter;
+                filtered = filtered.Where(t => t.Status == statusToMatch);
+            }
+
+            // Apply category filter
+            if (SelectedCategoryFilter.HasValue && SelectedCategoryFilter.Value > 0)
+            {
+                filtered = filtered.Where(t => t.CategoryId == SelectedCategoryFilter.Value);
+            }
+
+            FilteredTasks = new ObservableCollection<Task>(filtered.ToList());
         }
 
         private async void btnCompleteTask_Click(object sender, RoutedEventArgs e)
@@ -90,10 +230,18 @@ namespace Personal_Task_Manager
         {
             if (sender is Button button && button.DataContext is Task task)
             {
-                TaskService taskService = new TaskService();
-                await taskService.DeleteTaskAsync(task.Id);
+                var result = MessageBox.Show(
+                    $"Are you sure you want to delete the task '{task.Title}'?",
+                    "Confirm Delete",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
 
-                await LoadTasksAsync();
+                if (result == MessageBoxResult.Yes)
+                {
+                    TaskService taskService = new TaskService();
+                    await taskService.DeleteTaskAsync(task.Id);
+                    await LoadTasksAsync();
+                }
             }
         }
 
@@ -128,11 +276,29 @@ namespace Personal_Task_Manager
                 btnRefresh.IsEnabled = false;
                 await LoadTasksAsync();
                 await LoadCategoriesAsync();
+                OnPropertyChanged(nameof(LastUpdated));
             }
             finally
             {
                 btnRefresh.IsEnabled = true;
             }
+        }
+
+        private async void btnManageCategories_Click(object sender, RoutedEventArgs e)
+        {
+            ManageCategoriesWindow categoriesWindow = new ManageCategoriesWindow();
+            categoriesWindow.Owner = this;
+            bool? result = categoriesWindow.ShowDialog();
+            
+            // Refresh categories after the dialog closes
+            await LoadCategoriesAsync();
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

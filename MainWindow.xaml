@@ -235,7 +235,8 @@
                             Content="Categories" 
                             Style="{StaticResource SecondaryButtonStyle}"
                             Command="{Binding ManageCategoriesCommand}"
-                            Padding="12,8"/>
+                            Padding="12,8"
+                            Click="btnManageCategories_Click"/>
                 </StackPanel>
             </Grid>
         </Border>

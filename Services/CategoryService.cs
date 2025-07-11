@@ -45,6 +45,14 @@ namespace Personal_Task_Manager.Services
             return category;
         }
 
+        public async Task<Category> UpdateCategoryAsync(Category category)
+        {
+            using var context = new AppDbContext();
+            context.Categories.Update(category);
+            await context.SaveChangesAsync();
+            return category;
+        }
+
         public async System.Threading.Tasks.Task DeleteCategoryAsync(int id)
         {
             using var context = new AppDbContext();
