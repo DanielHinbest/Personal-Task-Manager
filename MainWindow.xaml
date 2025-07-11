@@ -187,6 +187,7 @@
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="20,0,0,0" VerticalAlignment="Center">
                     <ComboBox x:Name="cmbPriority"
                             Width="120" 
+                            SelectedValuePath="Tag"
                             SelectedValue="{Binding SelectedPriorityFilter}"
                             Margin="0,0,10,0"
                             Padding="8">
@@ -199,6 +200,7 @@
                     <ComboBox 
                             x:Name="cmbStatus"
                             Width="120" 
+                            SelectedValuePath="Tag"
                             SelectedValue="{Binding SelectedStatusFilter}"
                             Margin="0,0,10,0"
                             Padding="8">

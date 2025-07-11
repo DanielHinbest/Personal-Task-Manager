@@ -111,16 +111,17 @@ namespace Personal_Task_Manager
             InitializeComponent();
             this.DataContext = this;
             Loaded += MainWindow_Loaded;
-
-            // Set up filter ComboBox default selections
-            cmbPriority.SelectedIndex = 0; // "All Priorities"
-            cmbStatus.SelectedIndex = 0; // "All Status"
         }
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             await LoadTasksAsync();
             await LoadCategoriesAsync();
+            
+            // Set default selections after data is loaded
+            SelectedPriorityFilter = "All";
+            SelectedStatusFilter = "All";
+            SelectedCategoryFilter = 0;
         }
 
         private async void btnAddNewTask_Click(object sender, RoutedEventArgs e)
@@ -166,9 +167,6 @@ namespace Personal_Task_Manager
                     Categories.Add(category);
                 }
                 OnPropertyChanged(nameof(Categories));
-
-                // Set default selection
-                SelectedCategoryFilter = 0;
             }
             catch (Exception ex)
             {
@@ -178,6 +176,12 @@ namespace Personal_Task_Manager
 
         private void ApplyFilters()
         {
+            if (Tasks == null || !Tasks.Any())
+            {
+                FilteredTasks = new ObservableCollection<Task>();
+                return;
+            }
+
             var filtered = Tasks.AsEnumerable();
 
             // Apply search filter
@@ -191,13 +195,13 @@ namespace Personal_Task_Manager
             }
 
             // Apply priority filter
-            if (SelectedPriorityFilter != "All")
+            if (!string.IsNullOrEmpty(SelectedPriorityFilter) && SelectedPriorityFilter != "All")
             {
                 filtered = filtered.Where(t => t.Priority == SelectedPriorityFilter);
             }
 
             // Apply status filter
-            if (SelectedStatusFilter != "All")
+            if (!string.IsNullOrEmpty(SelectedStatusFilter) && SelectedStatusFilter != "All")
             {
                 var statusToMatch = SelectedStatusFilter == "InProgress" ? "In Progress" : SelectedStatusFilter;
                 filtered = filtered.Where(t => t.Status == statusToMatch);
